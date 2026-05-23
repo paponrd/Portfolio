@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Elicraft235 — Roblox Luau Scripter</title>
+	<meta name="description" content="Roblox Luau scripter building server-authoritative custom systems: datastores, economies, AI and admin panels. Open-source portfolio. Open for commissions.">
+
+	<meta property="og:title" content="Elicraft235 — Roblox Luau Scripter">
+	<meta property="og:description" content="Custom server-authoritative systems for Roblox games. Open-source portfolio. Open for commissions.">
+	<meta property="og:type" content="website">
+	<meta name="twitter:card" content="summary_large_image">
+
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+	<style>
+		:root {
+			--bg: #0D0F14;
+			--surface: #161B22;
+			--surface-2: #1c222c;
+			--border: #30363D;
+			--text: #E6EDF3;
+			--muted: #8B949E;
+			--accent: #58A6FF;
+			--accent-2: #BC8CFF;
+			--gradient: linear-gradient(135deg, #58A6FF 0%, #BC8CFF 100%);
+			--container: min(92%, 1100px);
+		}
+		* { box-sizing: border-box; margin: 0; padding: 0; }
+		html { scroll-behavior: smooth; }
+		body {
+			background: var(--bg);
+			color: var(--text);
+			font-family: "Inter", system-ui, sans-serif;
+			line-height: 1.7;
+			-webkit-font-smoothing: antialiased;
+		}
+		h1, h2, h3 { font-family: "Space Grotesk", sans-serif; line-height: 1.2; }
+		a { color: var(--accent); text-decoration: none; }
+		.container { width: var(--container); margin-inline: auto; }
+		section { padding-block: 5rem; border-bottom: 1px solid var(--border); }
+		.eyebrow { text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.8rem; color: var(--accent); font-weight: 600; }
+		h2 { font-size: clamp(1.6rem, 4vw, 2.4rem); margin: 0.4rem 0 1.8rem; }
+
+		.skip-link { position: absolute; left: -999px; top: 0; background: var(--accent); color: #04263a; padding: 10px 16px; z-index: 100; border-radius: 0 0 8px 0; }
+		.skip-link:focus { left: 0; }
+		:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+		header {
+			position: sticky; top: 0; z-index: 50;
+			background: rgba(13,15,20,0.85); backdrop-filter: blur(10px);
+			border-bottom: 1px solid var(--border);
+		}
+		.nav { display: flex; align-items: center; justify-content: space-between; padding: 1rem 0; }
+		.logo { font-family: "Space Grotesk"; font-weight: 700; font-size: 1.2rem; }
+		.logo span { background: var(--gradient); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+		.nav-links a { color: var(--muted); margin-left: 1.4rem; font-size: 0.95rem; transition: color 150ms; }
+		.nav-links a:hover { color: var(--text); }
+		@media (max-width: 36em) { .nav-links { display: none; } }
+
+		.btn {
+			display: inline-block; padding: 0.8rem 1.6rem; border-radius: 10px;
+			font-weight: 600; font-family: "Space Grotesk"; cursor: pointer; border: none;
+			transition: transform 150ms ease, box-shadow 150ms ease, opacity 150ms ease;
+		}
+		.btn-primary { background: var(--gradient); color: #061322; }
+		.btn-primary:hover { box-shadow: 0 0 24px rgba(88,166,255,0.4); transform: translateY(-2px); }
+		.btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--border); }
+		.btn-ghost:hover { border-color: var(--accent); }
+
+		.hero { padding-block: 6rem 5rem; text-align: center; }
+		.hero h1 { font-size: clamp(2.2rem, 7vw, 4rem); }
+		.hero h1 span { background: var(--gradient); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+		.hero .tagline { color: var(--muted); font-size: clamp(1rem, 2.5vw, 1.25rem); max-width: 640px; margin: 1.2rem auto 2rem; }
+		.hero-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+		.status { display: inline-flex; align-items: center; gap: 0.5rem; background: var(--surface); border: 1px solid var(--border); padding: 0.4rem 0.9rem; border-radius: 999px; font-size: 0.85rem; color: var(--muted); margin-bottom: 1.5rem; }
+		.dot { width: 9px; height: 9px; border-radius: 50%; background: #3fb950; box-shadow: 0 0 8px #3fb950; }
+
+		.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 270px), 1fr)); gap: 1.4rem; }
+		.card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 1.6rem; transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease; }
+		.card:hover { transform: translateY(-5px); box-shadow: 0 14px 34px rgba(88,166,255,0.12); border-color: var(--accent); }
+		.card h3 { font-size: 1.15rem; margin-bottom: 0.5rem; color: var(--accent); }
+		.card p { color: var(--muted); font-size: 0.95rem; }
+
+		.pills { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+		.pill { background: var(--surface-2); border: 1px solid var(--border); border-radius: 999px; padding: 0.45rem 1rem; font-size: 0.88rem; color: var(--text); }
+		.pill strong { color: var(--accent); }
+
+		.project { display: flex; flex-direction: column; }
+		.project h3 { color: var(--text); }
+		.project .tech { margin-top: auto; padding-top: 1rem; }
+		.tag { font-size: 0.75rem; color: var(--accent-2); border: 1px solid var(--border); border-radius: 6px; padding: 2px 8px; display: inline-block; margin: 2px; }
+
+		.about { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
+		@media (min-width: 48em) { .about { grid-template-columns: 1.4fr 1fr; } }
+		.about .stat { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.2rem; text-align: center; }
+		.about .stat b { font-family: "Space Grotesk"; font-size: 1.8rem; background: var(--gradient); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; display: block; }
+
+		.contact { text-align: center; }
+		.contact .card { max-width: 520px; margin: 0 auto; }
+		.contact .method { display: block; padding: 0.7rem; margin: 0.5rem 0; background: var(--surface-2); border-radius: 10px; border: 1px solid var(--border); color: var(--text); transition: border-color 150ms; }
+		.contact .method:hover { border-color: var(--accent); }
+
+		footer { padding: 2rem 0; text-align: center; color: var(--muted); font-size: 0.9rem; }
+
+		@media (prefers-reduced-motion: reduce) {
+			*, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; scroll-behavior: auto; }
+		}
+	</style>
+</head>
+<body>
+	<a href="#main" class="skip-link">Skip to content</a>
+
+	<header>
+		<div class="container nav">
+			<div class="logo"><span>&lt;/&gt; Elicraft235</span></div>
+			<nav class="nav-links" aria-label="Main navigation">
+				<a href="#services">Services</a>
+				<a href="#skills">Skills</a>
+				<a href="#projects">Projects</a>
+				<a href="#about">About</a>
+				<a href="#contact">Contact</a>
+			</nav>
+			<a href="#contact" class="btn btn-primary" style="padding:0.55rem 1.1rem;">Hire Me</a>
+		</div>
+	</header>
+
+	<main id="main">
+		<section class="hero" aria-labelledby="hero-heading">
+			<div class="container">
+				<span class="status"><span class="dot"></span> Open for commissions &middot; Replies within 24h</span>
+				<h1 id="hero-heading">Roblox <span>Luau Scripter</span><br>Custom Systems &amp; Gameplay</h1>
+				<p class="tagline">I build clean, server-authoritative systems for Roblox games: datastores, economies, AI, admin panels and more. Exploit-resistant code, delivered ready to plug in.</p>
+				<div class="hero-actions">
+					<a href="#contact" class="btn btn-primary">Hire Me</a>
+					<a href="#projects" class="btn btn-ghost">See My Work</a>
+				</div>
+			</div>
+		</section>
+
+		<section id="services" aria-labelledby="services-heading">
+			<div class="container">
+				<span class="eyebrow">What I build</span>
+				<h2 id="services-heading">Systems I can deliver</h2>
+				<div class="grid">
+					<div class="card"><h3>Data &amp; Saving</h3><p>Player data that never gets lost: DataStores with pcall, UpdateAsync, retries and BindToClose so progress survives a server shutdown.</p></div>
+					<div class="card"><h3>Economies &amp; Shops</h3><p>Server-authoritative currency, shops and inventories — the client requests, the server validates and decides.</p></div>
+					<div class="card"><h3>Idle / Tycoon loops</h3><p>Passive-income systems computed on the server (no physics-driven lag), with data-driven upgrade tiers.</p></div>
+					<div class="card"><h3>NPC &amp; AI</h3><p>Enemies that actually chase: state machines (patrol, chase, attack) driven by graph pathfinding (BFS) and raycast sensing.</p></div>
+					<div class="card"><h3>Admin Panels</h3><p>Custom admin command systems with permission tiers, fully server-side so they can't be exploited.</p></div>
+					<div class="card"><h3>UI &amp; HUD</h3><p>Responsive, animated interfaces with TweenService: mobile-first and clean.</p></div>
+					<div class="card"><h3>Anti-exploit</h3><p>Server-side validation, sanity checks and "never trust the client" design baked into every system.</p></div>
+					<div class="card"><h3>Bug Fixes</h3><p>Fixing broken scripts and reducing lag, draw calls and memory churn.</p></div>
+				</div>
+			</div>
+		</section>
+
+		<section id="skills" aria-labelledby="skills-heading">
+			<div class="container">
+				<span class="eyebrow">Toolbox</span>
+				<h2 id="skills-heading">Skills &amp; tools</h2>
+				<div class="pills">
+					<span class="pill"><strong>Luau</strong> (strict typing)</span>
+					<span class="pill">OOP &amp; metatables</span>
+					<span class="pill">task &amp; coroutines</span>
+					<span class="pill">RemoteEvents &amp; RemoteFunctions</span>
+					<span class="pill">Server-authoritative design</span>
+					<span class="pill">Anti-exploit</span>
+					<span class="pill">DataStore (pcall + retries)</span>
+					<span class="pill">TweenService</span>
+					<span class="pill">Pathfinding (BFS + graphs)</span>
+					<span class="pill">Raycasting &amp; CFrame</span>
+					<span class="pill">ModuleScript architecture</span>
+					<span class="pill">Pure-logic + Lune tests</span>
+					<span class="pill"><strong>Rojo</strong></span>
+					<span class="pill">Git</span>
+					<span class="pill">Wally</span>
+					<span class="pill">Selene &amp; StyLua</span>
+				</div>
+			</div>
+		</section>
+
+		<section id="projects" aria-labelledby="projects-heading">
+			<div class="container">
+				<span class="eyebrow">Proof</span>
+				<h2 id="projects-heading">Featured projects</h2>
+				<div class="grid">
+					<article class="card project">
+						<h3>CryptoForge &mdash; Mining Tycoon</h3>
+						<p>A full idle and tycoon economy: buy GPU rigs, place them on personal plots, and earn crypto passively from your total hashrate. Server-authoritative purchases, data-driven tiers, an interactive shopkeeper NPC and a live HUD.</p>
+						<div class="tech"><span class="tag">Luau</span><span class="tag">Economy</span><span class="tag">RemoteEvents</span><span class="tag">HUD</span></div>
+					</article>
+					<article class="card project">
+						<h3>Labyrinth Protocol &mdash; Maze &amp; AI</h3>
+						<p>A roguelike where every level is a freshly generated maze (recursive backtracker), patrolled by an enemy that hunts the player with BFS pathfinding over a custom graph and re-paths on the fly. Difficulty scales each level.</p>
+						<div class="tech"><span class="tag">Procedural Gen</span><span class="tag">BFS Pathfinding</span><span class="tag">Enemy AI</span></div>
+					</article>
+					<article class="card project">
+						<h3>Estación Tycoon &mdash; tested 20/20</h3>
+						<p>A space-mining tycoon where every purchase is decided on the server (ownership, real distance, funds, prerequisites). Idle income on a server loop, no physics lag. The economy logic is a pure module covered by 20/20 automated tests run with Lune.</p>
+						<div class="tech"><span class="tag">Server-authoritative</span><span class="tag">DataStore</span><span class="tag">Tested (Lune)</span></div>
+					</article>
+					<article class="card project">
+						<h3>Commission-Ready Systems</h3>
+						<p>Three focused systems built the way a client needs them: a pro save system (pcall + retries, autosave, BindToClose), an admin panel with permission tiers, and a hack-proof shop where the server validates type, ownership and funds before granting.</p>
+						<div class="tech"><span class="tag">DataStore</span><span class="tag">Admin</span><span class="tag">Shop</span><span class="tag">Anti-exploit</span></div>
+					</article>
+					<article class="card project">
+						<h3>Aura Rush &mdash; RNG with usable powers</h3>
+						<p>An RNG collection game where you don't just collect auras &mdash; you equip and use them (speed, high jump, low gravity, near-flight), with a persistent inventory that auto-saves and a server-wide aura glow.</p>
+						<div class="tech"><span class="tag">RNG</span><span class="tag">Persistence</span><span class="tag">VFX</span></div>
+					</article>
+					<article class="card project">
+						<h3>Abismo &mdash; asymmetric prototype</h3>
+						<p>A crew-vs-predator systems prototype: predator sensing with raycast + magnitude, an objective loop (repair 4 consoles), and pure-logic match win/lose covered by tests. Shipped with an honest scope note.</p>
+						<div class="tech"><span class="tag">Raycasting</span><span class="tag">Match Logic</span><span class="tag">Tested</span></div>
+					</article>
+				</div>
+			</div>
+		</section>
+
+		<section id="about" aria-labelledby="about-heading">
+			<div class="container">
+				<span class="eyebrow">Who you are hiring</span>
+				<h2 id="about-heading">About me</h2>
+				<div class="about">
+					<div>
+						<p>I am a self-taught Roblox developer focused on <strong>Luau scripting</strong>. I care about the engineering players never see but always feel: clean replication, exploit-resistant servers, and data that never gets lost.</p>
+						<p style="color:var(--muted); margin-top:1rem;">I work with a professional pipeline (Rojo, Git, Wally, Lune, Selene, StyLua), write readable typed code, and document my handoffs. I am disciplined, patient with complex systems, and always learning.</p>
+					</div>
+					<div class="grid" style="grid-template-columns:1fr 1fr; gap:0.8rem;">
+						<div class="stat"><b>6</b>projects built</div>
+						<div class="stat"><b>20/20</b>tests passing</div>
+						<div class="stat"><b>100%</b>server-authoritative</div>
+						<div class="stat"><b>24h</b>reply time</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section id="contact" class="contact" aria-labelledby="contact-heading">
+			<div class="container">
+				<span class="eyebrow">Let's build</span>
+				<h2 id="contact-heading">Get in touch</h2>
+				<div class="card">
+					<p style="color:var(--muted);">Currently <strong style="color:#3fb950;">open for commissions</strong>. Tell me what you need and I will reply within 24 hours.</p>
+					<div class="method">Discord &mdash; <strong>paponrd</strong></div>
+					<a class="method" href="https://www.roblox.com/search/users?keyword=Elicraft235" target="_blank" rel="noopener">Roblox &mdash; <strong>Elicraft235</strong></a>
+					<a class="method" href="mailto:paponrd20@gmail.com">Email &mdash; <strong>paponrd20@gmail.com</strong></a>
+					<p style="font-size:0.8rem; color:var(--muted); margin-top:0.8rem;">Payments are milestone-based: a portion upfront, the rest on delivery.</p>
+				</div>
+			</div>
+		</section>
+	</main>
+
+	<footer>
+		<div class="container">
+			<p>&copy; <span id="year"></span> Elicraft235 &middot; Roblox Luau Scripter &middot; Built by hand with HTML and CSS</p>
+		</div>
+	</footer>
+
+	<script>
+		document.getElementById("year").textContent = new Date().getFullYear();
+	</script>
+</body>
+</html>
